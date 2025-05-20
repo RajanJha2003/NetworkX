@@ -1,34 +1,23 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Eye, EyeOff, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { authDataContext } from '../context/AuthContext';
+import axios from 'axios';
 
-export default function SignUpPage() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    email: '',
-    password: ''
-  });
+export  default  function SignUpPage() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+ 
+
+  const {serverUrl} = useContext(authDataContext)
   
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-    
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
-    }
-  };
+
   
   const validate = () => {
     const newErrors = {};
@@ -62,24 +51,20 @@ export default function SignUpPage() {
     return newErrors;
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const newErrors = validate();
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      // Submit form - in a real app, this would connect to your backend
+      const result=await axios.post(serverUrl+"/api/auth/signup",{
+        formData
+
+      })
       console.log('Form submitted:', formData);
-      alert('Sign-up successful!');
-      // Reset form after successful submission
-      setFormData({
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        password: ''
-      });
+n
+    
     }
   };
   
@@ -118,8 +103,8 @@ export default function SignUpPage() {
                     type="text"
                     autoComplete="given-name"
                     required
-                    value={formData.firstName}
-                    onChange={handleChange}
+                   
+                    onChange={(e)=>setFirstName(e.target.value)}
                     className={`appearance-none block w-full px-3 py-2 border ${
                       errors.firstName ? 'border-red-300' : 'border-gray-300'
                     } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
@@ -141,8 +126,8 @@ export default function SignUpPage() {
                     type="text"
                     autoComplete="family-name"
                     required
-                    value={formData.lastName}
-                    onChange={handleChange}
+                   
+                    onChange={(e)=>setLastName(e.target.value)}
                     className={`appearance-none block w-full px-3 py-2 border ${
                       errors.lastName ? 'border-red-300' : 'border-gray-300'
                     } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
@@ -165,8 +150,8 @@ export default function SignUpPage() {
                   type="text"
                   autoComplete="username"
                   required
-                  value={formData.username}
-                  onChange={handleChange}
+                 
+                  onChange={(e)=>setUsername(e.target.value)}
                   className={`appearance-none block w-full px-3 py-2 border ${
                     errors.username ? 'border-red-300' : 'border-gray-300'
                   } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
@@ -188,8 +173,8 @@ export default function SignUpPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
+                 
+                  onChange={(e)=>setEmail(e.target.value)}
                   className={`appearance-none block w-full px-3 py-2 border ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
                   } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
@@ -211,8 +196,8 @@ export default function SignUpPage() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   required
-                  value={formData.password}
-                  onChange={handleChange}
+                
+                  onChange={(e)=>setPassword(e.target.value)}
                   className={`appearance-none block w-full px-3 py-2 border ${
                     errors.password ? 'border-red-300' : 'border-gray-300'
                   } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
