@@ -56,3 +56,54 @@ export const signup=async(req,res)=>{
         
     }
 }
+
+
+export const login=async(req,res)=>{
+    try {
+        const {email,password}=req.body;
+        let user=await User.findOne({email});
+        if(!user){
+            return res.status(400).json({message:"User does not exists"});
+        }
+
+       
+
+       const isMatchPassword=await bcrypt.compare(password,user.password);
+       if(!isMatchPassword){
+        return res.status(400).json({message:"Invalid credentials"});
+       }
+
+
+
+       
+
+        let token=generateToken(user._id);
+
+        res.cookie('token',token,{
+            httpOnly:true,
+            maxAge:7*24*60*60*1000,
+            secure:process.env.NODE_ENV==="development"?false:true,
+            sameSite:"strict"
+        })
+
+
+       return res.status(201).json({
+            message:"Logged in successfully",
+            user
+        })
+
+        
+
+        
+
+
+
+    } catch (error) {
+        console.error(error); // <-- log the actual error
+        return res.status(500).json({
+            message: "Something went wrong",
+            error: error.message || error
+        });
+        
+    }
+}
