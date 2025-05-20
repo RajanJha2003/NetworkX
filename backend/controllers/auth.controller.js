@@ -107,3 +107,22 @@ export const login=async(req,res)=>{
         
     }
 }
+
+
+export const logout=async(req,res)=>{
+    try {
+        res.clearCookie('token');
+        return res.status(200).json({
+            message:"Logged out successfully"
+        })
+        
+    } catch (error) {
+        console.error(error); // <-- log the actual error
+        return res.status(500).json({
+            message: "Something went wrong",
+            error: error.message || error
+        });
+        
+        
+    }
+}
