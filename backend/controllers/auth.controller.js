@@ -50,7 +50,7 @@ export const signup=async(req,res)=>{
     } catch (error) {
         console.error(error); // <-- log the actual error
         return res.status(500).json({
-            message: "Something went wrong",
+            message: "Signup error",
             error: error.message || error
         });
         
@@ -101,7 +101,7 @@ export const login=async(req,res)=>{
     } catch (error) {
         console.error(error); // <-- log the actual error
         return res.status(500).json({
-            message: "Something went wrong",
+            message: "Login error",
             error: error.message || error
         });
         
@@ -119,7 +119,7 @@ export const logout=async(req,res)=>{
     } catch (error) {
         console.error(error); 
         return res.status(500).json({
-            message: "Something went wrong",
+            message: "Logout Error",
             error: error.message || error
         });
         
