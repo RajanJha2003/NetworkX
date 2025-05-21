@@ -13,7 +13,7 @@ const UserContext = ({ children }) => {
       let result = await axios.get(serverUrl + "/api/user/currentUser", {
         withCredentials: true,
       });
-      setUserData(result.data);
+      setUserData(result.data.user);
 
       console.log(result);
     } catch (error) {
