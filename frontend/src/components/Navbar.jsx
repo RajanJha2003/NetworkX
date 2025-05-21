@@ -1,13 +1,41 @@
-import { useState, useRef, useEffect, useContext } from 'react';
-import { Search, Bell, Users, Home, LogOut, User, Linkedin } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { userDataContext } from '../context/UserContext';
+import { useState, useRef, useEffect, useContext } from "react";
+import {
+  Search,
+  Bell,
+  Users,
+  Home,
+  LogOut,
+  User,
+  Linkedin,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { userDataContext } from "../context/UserContext";
+import { authDataContext } from "../context/AuthContext";
+import axios from "axios";
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate=useNavigate();
   const dropdownRef = useRef(null);
 
-  const {userData,setUserData}=useContext(userDataContext);
+  const { userData, setUserData } = useContext(userDataContext);
+
+  const {serverUrl}=useContext(authDataContext);
+
+
+  const handleSignOut=async()=>{
+    try {
+        const result=await axios.get(serverUrl+"/api/auth/logout",{withCredentials:true});
+        setUserData(null);
+        navigate("/login");
+        console.log(result);
+        
+
+    } catch (error) {
+        console.log(error);
+        
+    }
+  }
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -16,9 +44,9 @@ export default function Navbar() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -30,7 +58,9 @@ export default function Navbar() {
           <div className="h-8 w-8 rounded-md bg-blue-600 flex items-center justify-center mr-2">
             <Linkedin className="h-5 w-5 text-white" />
           </div>
-          <span className="text-blue-600 font-bold text-xl hidden sm:block">NetworkX</span>
+          <span className="text-blue-600 font-bold text-xl hidden sm:block">
+            NetworkX
+          </span>
         </Link>
 
         {/* Search bar */}
@@ -49,21 +79,32 @@ export default function Navbar() {
         <div className="flex items-center gap-1">
           {/* Navigation links - hidden on mobile */}
           <div className="hidden md:flex items-center">
-            <Link to="/" className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200">
+            <Link
+              to="/"
+              className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200"
+            >
               <Home size={20} />
               <span className="text-xs mt-1 font-medium">Home</span>
             </Link>
 
-            <Link to="/network" className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200">
+            <Link
+              to="/network"
+              className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200"
+            >
               <Users size={20} />
               <span className="text-xs mt-1 font-medium">My Network</span>
             </Link>
           </div>
 
           {/* Notifications */}
-          <Link to="/notifications" className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200 relative ml-1">
+          <Link
+            to="/notifications"
+            className="flex flex-col items-center text-gray-600 hover:text-blue-600 px-2 transition-colors duration-200 relative ml-1"
+          >
             <Bell size={20} />
-            <span className="text-xs mt-1 font-medium hidden md:block">Notifications</span>
+            <span className="text-xs mt-1 font-medium hidden md:block">
+              Notifications
+            </span>
           </Link>
 
           {/* Profile dropdown */}
@@ -86,32 +127,49 @@ export default function Navbar() {
                     </div>
                     <div>
                       <div className="font-semibold text-gray-800">{`${userData.firstName} ${userData.lastName}`}</div>
-                      <div className="text-xs text-gray-500">Product Designer at NetworkX</div>
-                      <div className="text-xs text-gray-500">{userData.email}</div>
+                      <div className="text-xs text-gray-500">
+                        Product Designer at NetworkX
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {userData.email}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200">
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200"
+                >
                   <User size={16} className="mr-2 text-gray-500" />
                   View Profile
                 </Link>
 
-                <Link to="/network" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200">
+                <Link
+                  to="/network"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200"
+                >
                   <Users size={16} className="mr-2 text-gray-500" />
                   My Network
                 </Link>
 
                 {/* Home in dropdown for mobile */}
-                <Link to="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200 md:hidden">
+                <Link
+                  to="/"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors duration-200 md:hidden"
+                >
                   <Home size={16} className="mr-2 text-gray-500" />
                   Home
                 </Link>
 
-                <Link to="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center border-t border-gray-200 transition-colors duration-200">
-                  <LogOut size={16} className="mr-2 text-gray-500" />
-                  Sign Out
-                </Link>
+                <button
+  onClick={handleSignOut}
+  className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center border-t border-gray-200 transition-colors duration-200"
+>
+  <LogOut size={16} className="mr-2 text-gray-500" />
+  Sign Out
+</button>
+
               </div>
             )}
           </div>
