@@ -6,7 +6,7 @@ import axios from "axios";
 export const userDataContext = createContext();
 
 const UserContext = ({ children }) => {
-  let [userData, setUserData] = useState([]);
+  let [userData, setUserData] = useState(null);
   const { serverUrl } = useContext(authDataContext);
   const getCurrentUser = async () => {
     try {
@@ -18,6 +18,7 @@ const UserContext = ({ children }) => {
       console.log(result);
     } catch (error) {
       console.log(error);
+      setUserData(null);
     }
   };
 

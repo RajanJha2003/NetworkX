@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react';
 import { Eye, EyeOff, Linkedin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authDataContext } from '../context/AuthContext';
 import axios from 'axios';
+import { userDataContext } from '../context/UserContext';
 
 export default function SignUpPage() {
+  const navigate=useNavigate();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUserName] = useState('');
@@ -15,6 +17,7 @@ export default function SignUpPage() {
   const [error, setError] = useState('');
 
   const { serverUrl } = useContext(authDataContext);
+  const {userData,setUserData}=useContext(userDataContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +36,9 @@ export default function SignUpPage() {
       { withCredentials: true }
     );
     console.log(result);
+    setUserData(result.data);
+    navigate("/")
+
     setError('');
     setLoading(false);
     setFirstName('');
