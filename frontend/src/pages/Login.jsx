@@ -1,10 +1,12 @@
 import { useContext, useState } from 'react';
 import { Eye, EyeOff, Linkedin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authDataContext } from '../context/AuthContext';
 import axios from 'axios';
+import { userDataContext } from '../context/UserContext';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -12,7 +14,7 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const { serverUrl } = useContext(authDataContext);
-
+  const {userData,setUserData}=useContext(userDataContext)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -27,6 +29,8 @@ const Login = () => {
         { withCredentials: true }
       );
       console.log(result);
+      setUserData(result.data);
+      navigate("/")
       setError('');
       setLoading(false);
       setEmail('');
