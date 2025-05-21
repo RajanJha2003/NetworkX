@@ -2,14 +2,14 @@ import jwt from 'jsonwebtoken';
 const isAuth = async (req, res, next) => {
     try {
       console.log("req.cookies:", req.cookies); // 👈 log full cookies object
-      const token = req.cookies.token;
+      const {token} = req.cookies;
   
       if (!token) {
         return res.status(401).json({ message: "Token not exists" });
       }
   
       const verifyToken = await jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = verifyToken.id;
+      req.userId = verifyToken.userId;
       next();
   
     } catch (error) {
