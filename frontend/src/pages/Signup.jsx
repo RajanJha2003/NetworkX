@@ -4,74 +4,43 @@ import { Link } from 'react-router-dom';
 import { authDataContext } from '../context/AuthContext';
 import axios from 'axios';
 
-export  default  function SignUpPage() {
+export default function SignUpPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
- 
-
-  const {serverUrl} = useContext(authDataContext)
-  
-  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  
 
-  
-  const validate = () => {
-    const newErrors = {};
-    
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-    
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-    
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    
-    return newErrors;
-  };
-  
-  const handleSubmit = async(e) => {
+  const { serverUrl } = useContext(authDataContext);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = validate();
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-    } else {
-      const result=await axios.post(serverUrl+"/api/auth/signup",{
-        formData
 
-      })
-      console.log('Form submitted:', formData);
-n
+   try {
+    const result = await axios.post(
+      serverUrl + '/api/auth/signup',
+      {
+        firstName,
+        lastName,
+        userName,
+        email,
+        password,
+      },
+      { withCredentials: true }
+    );
+
+    console.log(result);
+   } catch (error) {
+    console.log(error);
     
-    }
+   }
   };
-  
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center px-4 py-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -80,15 +49,11 @@ n
             <Linkedin className="h-7 w-7 text-white" />
           </div>
         </div>
-        <h2 className="mt-3 text-center text-2xl font-bold text-gray-900">
-          Join NetworkX
-        </h2>
-        <p className="mt-1 text-center text-sm text-gray-600">
-          Make the most of your professional life
-        </p>
+        <h2 className="mt-3 text-center text-2xl font-bold text-gray-900">Join NetworkX</h2>
+        <p className="mt-1 text-center text-sm text-gray-600">Make the most of your professional life</p>
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+      <form onSubmit={handleSubmit} className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-6 px-4 shadow sm:rounded-lg sm:px-8">
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -98,20 +63,15 @@ n
                 </label>
                 <div className="mt-1">
                   <input
+                    value={firstName}
                     id="firstName"
                     name="firstName"
                     type="text"
                     autoComplete="given-name"
                     required
-                   
-                    onChange={(e)=>setFirstName(e.target.value)}
-                    className={`appearance-none block w-full px-3 py-2 border ${
-                      errors.firstName ? 'border-red-300' : 'border-gray-300'
-                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
-                  {errors.firstName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
-                  )}
                 </div>
               </div>
 
@@ -121,20 +81,15 @@ n
                 </label>
                 <div className="mt-1">
                   <input
+                    value={lastName}
                     id="lastName"
                     name="lastName"
                     type="text"
                     autoComplete="family-name"
                     required
-                   
-                    onChange={(e)=>setLastName(e.target.value)}
-                    className={`appearance-none block w-full px-3 py-2 border ${
-                      errors.lastName ? 'border-red-300' : 'border-gray-300'
-                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
-                  {errors.lastName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
-                  )}
                 </div>
               </div>
             </div>
@@ -145,20 +100,15 @@ n
               </label>
               <div className="mt-1">
                 <input
+                  value={userName}
                   id="username"
-                  name="username"
+                  name="userName"
                   type="text"
                   autoComplete="username"
                   required
-                 
-                  onChange={(e)=>setUsername(e.target.value)}
-                  className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.username ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
-                {errors.username && (
-                  <p className="mt-1 text-sm text-red-600">{errors.username}</p>
-                )}
               </div>
             </div>
 
@@ -168,20 +118,15 @@ n
               </label>
               <div className="mt-1">
                 <input
+                  value={email}
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                 
-                  onChange={(e)=>setEmail(e.target.value)}
-                  className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.email ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                )}
               </div>
             </div>
 
@@ -191,16 +136,14 @@ n
               </label>
               <div className="mt-1 relative">
                 <input
+                  value={password}
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   required
-                
-                  onChange={(e)=>setPassword(e.target.value)}
-                  className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.password ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <button
                   type="button"
@@ -213,36 +156,31 @@ n
                     <Eye className="h-5 w-5 text-gray-400" />
                   )}
                 </button>
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                )}
               </div>
             </div>
 
             <div>
               <button
-                onClick={handleSubmit}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Join NetworkX
               </button>
             </div>
           </div>
-          
+
           <div className="mt-5">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Already have an account?
-                </span>
+                <span className="px-2 bg-white text-gray-500">Already have an account?</span>
               </div>
             </div>
 
             <div className="mt-3">
-              <Link to={"/login"}
+              <Link
+                to={'/login'}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
               >
                 Sign in
@@ -250,7 +188,7 @@ n
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
