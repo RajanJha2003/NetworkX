@@ -1,11 +1,36 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Navbar from '../components/Navbar';
 import profile from '../assets/profile.webp';
-import { FiCamera, FiPlus, FiMapPin, FiEdit, FiBriefcase, FiUsers } from 'react-icons/fi';
+import { FiCamera, FiPlus, FiMapPin, FiEdit, FiBriefcase, FiUsers, FiX } from 'react-icons/fi';
 import { userDataContext } from '../context/UserContext';
 
 const Home = () => {
   const { userData, setUserData } = useContext(userDataContext);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    headline: userData.headline || "",
+    location: userData.location || "",
+    about: userData.about || "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setUserData(prev => ({
+      ...prev,
+      ...formData
+    }));
+    setShowEditProfile(false);
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-100 pt-20 px-4 pb-10">
@@ -50,7 +75,10 @@ const Home = () => {
                 </div>
                 
                 <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="w-full py-2 bg-blue-50 text-blue-600 rounded-md font-medium text-sm hover:bg-blue-100 transition-colors flex items-center justify-center">
+                  <button 
+                    className="w-full py-2 bg-blue-50 text-blue-600 rounded-md font-medium text-sm hover:bg-blue-100 transition-colors flex items-center justify-center"
+                    onClick={() => setShowEditProfile(true)}
+                  >
                     <FiEdit className="mr-2" /> Edit Profile
                   </button>
                 </div>
@@ -187,6 +215,107 @@ const Home = () => {
           </div>
         </div>
       </div>
+      
+      {/* Edit Profile Modal */}
+      {showEditProfile && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <h3 className="font-semibold text-lg text-gray-800">Edit Profile</h3>
+              <button 
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                onClick={() => setShowEditProfile(false)}
+              >
+                <FiX className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <label htmlFor="headline" className="block text-sm font-medium text-gray-700 mb-1">Headline</label>
+                <input
+                  type="text"
+                  id="headline"
+                  name="headline"
+                  value={formData.headline}
+                  onChange={handleChange}
+                  placeholder="E.g., Software Engineer at Tech Company"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="E.g., San Francisco, CA"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <div className="mb-6">
+                <label htmlFor="about" className="block text-sm font-medium text-gray-700 mb-1">About</label>
+                <textarea
+                  id="about"
+                  name="about"
+                  value={formData.about}
+                  onChange={handleChange}
+                  rows="4"
+                  placeholder="Tell us about yourself..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                ></textarea>
+              </div>
+              
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowEditProfile(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
